@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Robotic Future - Phone Number Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Orbitron:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #000;
+        }
+
+        video.background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.5); /* Transparent dark background */
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 
+                inset 0 0 15px rgba(0, 255, 255, 0.5), /* Blue glow */
+                0 5px 15px rgba(0, 255, 255, 0.4); /* Softer outer shadow */
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(2px) brightness(1.1); /* Reduced blur */
+            border: 2px solid rgba(0, 255, 255, 0.5); /* Initial glow border */
+            position: relative;
+            animation: float3D 5s ease-in-out infinite;
+            transition: border-color 0.3s ease, border-width 0.3s ease;
+        }
+
+        @keyframes float3D {
+            0% {
+                transform: perspective(500px) rotateY(3deg) rotateX(2deg) translateY(0);
+            }
+            25% {
+                transform: perspective(500px) rotateY(0deg) rotateX(4deg) translateY(-10px);
+            }
+            50% {
+                transform: perspective(500px) rotateY(-3deg) rotateX(2deg) translateY(0);
+            }
+            75% {
+                transform: perspective(500px) rotateY(0deg) rotateX(0deg) translateY(10px);
+            }
+            100% {
+                transform: perspective(500px) rotateY(3deg) rotateX(2deg) translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Russo One', sans-serif; /* New futuristic font */
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: rgba(0, 255, 204, 0.4); /* 60% transparent */
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(0, 255, 204, 0.3); /* Reduced light glow */
+        }
+
+        label {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6); /* 40% transparent */
+            display: block;
+            margin: 10px 0;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0 20px 0;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #00ffcc;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.6); /* Glowing focus effect */
+        }
+
+        /* Reduced border width on hover to 1px */
+        .container:hover {
+            border-color: #00ffcc; /* Increase border glow */
+            border-width: 1px; /* Further reduced border width */
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #00d2ff, #6a0dad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 5px 10px rgba(0, 255, 255, 0.4); /* Subtle glow */
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #ff4b2b, #00d2ff);
+            box-shadow: 0 10px 20px rgba(255, 75, 43, 0.8); /* Hover with bright glow */
+        }
+    </style>
+</head>
+<body>
+
+    <video class="background-video" autoplay loop muted playsinline>
+        <source src="/videos/robotic-animation.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="container">
+        <h1>AI Phone Number Generator</h1>
+        <form action="/" method="POST">
+            <label for="area_code">Area Code (e.g., 202):</label>
+            <input type="text" id="area_code" name="area_code" required placeholder="Enter area code" maxlength="3" pattern="\d{3}">
+
+            <label for="quantity">Number of Phone Numbers:</label>
+            <input type="number" id="quantity" name="quantity" required placeholder="Enter quantity" min="1" max="1000">
+
+            <button type="submit">Generate Phone Numbers</button>
+        </form>
+    </div>
+
+</body>
+</html>
