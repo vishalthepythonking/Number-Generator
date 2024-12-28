@@ -36,19 +36,10 @@ app.post('/', (req, res) => {
     // Convert the phone numbers to CSV
     const csv = parse(phoneNumbers);
 
-    // Path to save the CSV file temporarily
-    const filePath = path.join(__dirname, 'generated_phone_numbers.csv');
-    fs.writeFileSync(filePath, csv);
-
-    // Trigger the download of the generated CSV file
-    res.download(filePath, 'generated_phone_numbers.csv', (err) => {
-        if (err) {
-            console.error('Error during file download:', err);
-        }
-
-        // Clean up the file after download
-        fs.unlinkSync(filePath);
-    });
+    // Set headers for CSV download without writing to a file
+    res.header('Content-Type', 'text/csv');
+    res.attachment('generated_phone_numbers.csv');
+    res.send(csv);  // Send the CSV content directly as a response
 });
 
 // Start the server
