@@ -3,36 +3,23 @@ const faker = require('faker');
 const { parse } = require('json2csv');
 const fs = require('fs');
 const path = require('path');
-const helmet = require('helmet');
 const compression = require('compression');
-const morgan = require('morgan');
-const dotenv = require('dotenv');
-
-// Load environment variables from .env file
-dotenv.config();
+const helmet = require('helmet');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware to secure HTTP headers
-app.use(helmet());
-
-// Middleware for compression
-app.use(compression());
-
-// Middleware for logging HTTP requests
-app.use(morgan('combined'));
-
-// Middleware to parse form data
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware
+app.use(compression()); // Enable compression for better performance
+app.use(helmet()); // Secure HTTP headers
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded form data
+app.use(express.json()); // Parse JSON data
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
 // Serve the index.html file
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Handle form submission and generate phone numbers
@@ -44,41 +31,35 @@ app.post('/', (req, res) => {
         return res.status(400).send('Invalid input');
     }
 
-    try {
-        // Generate phone numbers based on the area code and quantity
-        const phoneNumbers = [];
-        for (let i = 0; i < quantity; i++) {
-            const phoneNumber = `${area_code}-${faker.phone.phoneNumber('###-####')}`;
-            phoneNumbers.push({ phone_number: phoneNumber });
+    // Generate phone numbers based on the area code and quantity
+    const phoneNumbers = [];
+    for (let i = 0; i < quantity; i++) {
+        const phoneNumber = `${area_code}-${faker.phone.phoneNumber('###-####')}`;
+        phoneNumbers.push({ phone_number: phoneNumber });
+    }
+
+    // Convert the phone numbers to CSV
+    const csv = parse(phoneNumbers);
+
+    // Path to save the CSV file temporarily
+    const filePath = path.join(__dirname, 'generated_phone_numbers.csv');
+    fs.writeFileSync(filePath, csv);
+
+    // Trigger the download of the generated CSV file
+    res.download(filePath, 'generated_phone_numbers.csv', (err) => {
+        if (err) {
+            console.error('Error during file download:', err);
         }
 
-        // Convert the phone numbers to CSV
-        const csv = parse(phoneNumbers);
-
-        // Path to save the CSV file temporarily
-        const filePath = path.join(__dirname, 'generated_phone_numbers.csv');
-        fs.writeFileSync(filePath, csv);
-
-        // Trigger the download of the generated CSV file
-        res.download(filePath, 'generated_phone_numbers.csv', (err) => {
-            if (err) {
-                console.error('Error during file download:', err);
-                res.status(500).send('Error during file download');
-            }
-
-            // Clean up the file after download
-            fs.unlinkSync(filePath);
-        });
-    } catch (error) {
-        console.error('Error generating phone numbers:', error);
-        res.status(500).send('An error occurred while processing your request');
-    }
+        // Clean up the file after download
+        fs.unlinkSync(filePath);
+    });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
-    res.status(500).send('Internal server error');
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
 });
 
 // Start the server
